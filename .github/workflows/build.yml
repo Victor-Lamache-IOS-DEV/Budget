@@ -52,6 +52,7 @@ jobs:
           xcodebuild test \
             -scheme Budget \
             -destination "platform=iOS Simulator,name=$SIM_NAME" \
+            CODE_SIGNING_ALLOWED=NO \
             clean test
 
       - name: Build and Archive Budget
