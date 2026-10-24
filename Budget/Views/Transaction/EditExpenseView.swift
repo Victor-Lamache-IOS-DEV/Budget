@@ -73,7 +73,7 @@ public struct EditExpenseView: View {
                     HStack {
                         Text("Taux appliqué à l'origine")
                         Spacer()
-                        Text("1 € = \(transaction.rateUsed) SEK")
+                        Text(verbatim: "1 € = \(transaction.rateUsed) SEK")
                             .foregroundStyle(.secondary)
                     }
                     HStack {

@@ -1,6 +1,12 @@
 import SwiftUI
 import SwiftData
 
+struct DayGroup: Identifiable {
+    var id: Date { date }
+    let date: Date
+    let transactions: [Transaction]
+}
+
 public struct HistoryView: View {
     @Environment(\.modelContext) private var modelContext
     
@@ -41,12 +47,14 @@ public struct HistoryView: View {
     }
     
     // Grouped by day
-    private var groupedTransactions: [(key: Date, transactions: [Transaction])] {
+    private var groupedTransactions: [DayGroup] {
         let calendar = Calendar.current
         let grouped = Dictionary(grouping: filteredTransactions) { tx in
             calendar.startOfDay(for: tx.date)
         }
-        return grouped.sorted { $0.key > $1.key }
+        return grouped
+            .map { DayGroup(date: $0.key, transactions: $0.value) }
+            .sorted { $0.date > $1.date }
     }
     
     private var totalCycleSpent: Decimal {
@@ -119,8 +127,8 @@ public struct HistoryView: View {
                     }
                 } else {
                     List {
-                        ForEach(groupedTransactions, id: \.key) { group in
-                            Section(header: Text(formatSectionHeader(group.key))) {
+                        ForEach(groupedTransactions) { group in
+                            Section(header: Text(formatSectionHeader(group.date))) {
                                 ForEach(group.transactions) { tx in
                                     TransactionRow(
                                         transaction: tx,
@@ -219,7 +227,7 @@ struct TransactionRow: View {
                     .fontWeight(.bold)
                 
                 if transaction.originalCurrency != baseCurrency {
-                    Text("\(transaction.originalAmount) \(transaction.originalCurrency.symbol)")
+                    Text(BudgetCalculator.formatAmount(transaction.originalAmount, currency: transaction.originalCurrency))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

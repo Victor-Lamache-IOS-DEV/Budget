@@ -96,7 +96,7 @@ public struct BudgetCalculator {
         let calculatedNext = calendar.date(from: nextCycleComponents) ?? calendar.startOfDay(for: date)
         
         // Cycle ends 1 second before next cycle starts
-        var calculatedEnd = calculatedNext.addingTimeInterval(-1)
+        let calculatedEnd = calculatedNext.addingTimeInterval(-1)
         
         // Check overrides for custom cycle start
         for override in overrides {
@@ -130,7 +130,7 @@ public struct BudgetCalculator {
         calendar: Calendar = .current
     ) -> [CyclePeriod] {
         var result: [CyclePeriod] = []
-        var current = cycleForDate(date, payday: payday, overrides: overrides, calendar: calendar)
+        let current = cycleForDate(date, payday: payday, overrides: overrides, calendar: calendar)
         result.append(current)
         
         // Add past cycles
